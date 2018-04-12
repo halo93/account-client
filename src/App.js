@@ -5,23 +5,39 @@ import $ from 'jquery';
 
 class App extends Component {
 
-    constructor()
-    {
+    constructor() {
         super();
         this.code = "";
+        this.appId = "1805391003067479";
+        this.appSecret = "ff63e5ef593b9f2a3c762e40adfad55a";
         try {
             this.code = this.getParameterURL('code');
+            if(this.code) {
+                $.ajax({
+                    url: `https://graph.facebook.com/v2.12/oauth/access_token?client_id=${this.appId}
+                        &redirect_uri=http://localhost:3000&client_secret=${this.appSecret}&code=${this.code}`,
+                    method: 'GET',
+                    success: function (rs) {
+                        console.log(rs.data);
+                        window.location.href = rs.data;
+                    },
+                    error: function (rs) {
+                        console.log(rs);
+                    }
+                })
+            }
         } catch (e) {
-        console.log(this.code);
+            console.log(this.code);
+        }
     }
-
-    getParameterURL(a) {
+    getParameterURL(a)
+    {
         let c = [];
         let b = window.location.search.substring(1).split('&');
-        b.forEach(w => c.push({ "key": w.split('=')[0], "value": w.split('=')[1] }));
+        b.forEach(w => c.push({"key": w.split('=')[0], "value": w.split('=')[1]}));
         try {
             return c.find(w => w.key === a).value;
-        }catch (e) {
+        } catch (e) {
             return "";
         }
     }
@@ -42,21 +58,25 @@ class App extends Component {
         })
     }
 
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-        <button type="button" id="facebook" ref="facebook" onClick={this.handleLoginSocial.bind(this)} >Connect with Facebook</button>
-        <button type="button" id="twitter" ref="twitter" onClick={this.handleLoginSocial.bind(this)}>Connect with Twitter</button>
-      </div>
-    );
-  }
+    render()
+    {
+        return (
+            <div className="App">
+                <header className="App-header">
+                    <img src={logo} className="App-logo" alt="logo"/>
+                    <h1 className="App-title">Welcome to React</h1>
+                </header>
+                <p className="App-intro">
+                    To get started, edit <code>src/App.js</code> and save to reload.
+                </p>
+                <button type="button" id="facebook" ref="facebook"
+                        onClick={this.handleLoginSocial.bind(this)}>Connect with Facebook
+                </button>
+                <button type="button" id="twitter" ref="twitter" onClick={this.handleLoginSocial.bind(this)}>Connect
+                    with Twitter
+                </button>
+            </div>
+        );
+    }
 }
-
 export default App;
